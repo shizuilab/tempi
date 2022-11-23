@@ -1,16 +1,29 @@
 # このpyを実行するにはsudo権限が必要です。
 # 権限がたりないとscanner.scan()でエラーになります。
+# 20221123
+# このコードは@geboさんのQiita記事を元に目指せ北海道@habingofitがWanaPi用に変更を加えたものです。
+# https://qiita.com/gebo/items/67aca91d07e3d7fccc85
+# Lineに通知する部分を、Symbol系ブロックチェーンに記録するように改造しました。
+
 from bluepy import btle
 import sys
 import time
 import to_float_from_11073_32bit_float as tofl
 import to_date_time as todt
+import sqlite3
 
 # define
 SERVICE_UUID="00001809-0000-1000-8000-00805f9b34fb"
+MYADDRESS="NBMOXYQPCL72TAB4NEZZ7PBKPU6NCKZKZ34OI3Y"
+MYPLACE="bodytemp"
+WANAPI_MOSAIC="75706ADB11C869EE"
 
 # global
 BLE_ADDRESS="64:33:db:89:30:e0"
+rawfromaddress = MYADDRESS
+rawtoaddress = MYADDRESS
+myplace = 'bodytemp'
+WmosaicID = WANAPI_MOSAIC
 
 def scan():
     try:
@@ -18,7 +31,7 @@ def scan():
         devices = scanner.scan(3.0)
 
         for device in devices:
-            print(f'SCAN BLE_ADDR：{device.addr}')
+            #print(f'SCAN BLE_ADDR：{device.addr}')
 
             if(device.addr.lower()==BLE_ADDRESS.lower()):
                 print("Find!")
@@ -43,6 +56,25 @@ class MyDelegate(btle.DefaultDelegate):
         print("temp = " + str(temp))
         timestamp = todt.to_date_time(data[5:12])
         print("timestamp = " + timestamp)
+
+        parent=myplace
+        child=temp
+        created_at=timestamp
+        con = sqlite3.connect('/home/pi/wanapi2/db/shizuinet.db')
+        cur = con.cursor()
+        sql = 'SELECT max(id), id FROM transactions'
+        cur = con.cursor()
+        cur.execute(sql)
+        for row in cur:
+            print(str(row[0]))
+            id = row[0]+1
+
+        sql = 'INSERT INTO transactions (id, sender, receiver, mosaic, parent, child, created_at)  VALUES (?,?,?,?,?,?,?)'
+        data = [id, rawfromaddress, rawtoaddress, WmosaicID, parent, child, created_at]
+        cur.execute(sql, data)
+        #print(data)
+        con.commit()
+        con.close()
 
 def main():
     #
