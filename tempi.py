@@ -14,7 +14,7 @@ import sqlite3
 
 # define
 SERVICE_UUID="00001809-0000-1000-8000-00805f9b34fb"
-MYADDRESS="NBMOXYQPCL72TAB4NEZZ7PBKPU6NCKZKZ34OI3Y"
+MYADDRESS="NCQRNQBQOIRWJM6MUK2D4SFD55EV46YYNBNYM2A"
 MYPLACE="bodytemp"
 WANAPI_MOSAIC="75706ADB11C869EE"
 
@@ -23,6 +23,7 @@ BLE_ADDRESS="64:33:db:89:30:e0"
 rawfromaddress = MYADDRESS
 rawtoaddress = MYADDRESS
 myplace = 'bodytemp'
+device = "A&D:6433db8930e0:"
 WmosaicID = WANAPI_MOSAIC
 
 def scan():
@@ -58,7 +59,7 @@ class MyDelegate(btle.DefaultDelegate):
         print("timestamp = " + timestamp)
 
         parent=myplace
-        child=temp
+        child=device+str(temp)
         created_at=timestamp
         con = sqlite3.connect('/home/pi/wanapi2/db/shizuinet.db')
         cur = con.cursor()
