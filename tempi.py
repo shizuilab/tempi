@@ -23,7 +23,7 @@ BLE_ADDRESS="64:33:db:89:30:e0"
 rawfromaddress = MYADDRESS
 rawtoaddress = MYADDRESS
 myplace = 'bodytemp'
-device = "A&D:6433db8930e0:"
+device = "A&D;6433db8930e0;"
 WmosaicID = WANAPI_MOSAIC
 
 def scan():
