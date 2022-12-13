@@ -9,5 +9,5 @@ def to_date_time(data):
     min = int(data[5])
     ss = int(data[6])
 
-    strdate_time=str(yyyy)+"/"+str(mm)+"/"+str(dd)+" "+str(hh)+":"+str(min)+":"+str(ss)
+    strdate_time=str(yyyy)+"/"+str(mm).zfill(2)+"/"+str(dd).zfill(2)+" "+str(hh).zfill(2)+":"+str(min).zfill(2)+":"+str(ss).zfill(2)
     return strdate_time
