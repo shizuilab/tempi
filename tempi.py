@@ -8,6 +8,7 @@
 from bluepy import btle
 import sys
 import time
+import datetime
 import to_float_from_11073_32bit_float as tofl
 import to_date_time as todt
 import sqlite3
@@ -55,12 +56,14 @@ class MyDelegate(btle.DefaultDelegate):
 
         temp = tofl.to_float_from_11073_32bit_float(data[1:5])
         print("temp = " + str(temp))
-        timestamp = todt.to_date_time(data[5:12])
-        print("timestamp = " + timestamp)
+        #timestamp = todt.to_date_time(data[5:12])
+        timestamp = datetime.datetime.now()
+        timestampstr = timestamp.strftime('%Y/%m/%d %H:%M:%S')
+        print("timestamp = " + timestampstr)
 
         parent=myplace
         child=device+str(temp)
-        created_at=timestamp
+        created_at=timestampstr
         con = sqlite3.connect('/home/pi/wanapi2/db/shizuinet.db')
         cur = con.cursor()
         sql = 'SELECT max(id), id FROM transactions'
