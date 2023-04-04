@@ -62,7 +62,7 @@ class MyDelegate(btle.DefaultDelegate):
         print("timestamp = " + timestampstr)
 
         parent=myplace
-        child=device+str(temp)
+        child=str(temp)
         created_at=timestampstr
         con = sqlite3.connect('/home/pi/wanapi2/db/shizuinet.db')
         cur = con.cursor()
