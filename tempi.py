@@ -23,8 +23,9 @@ WANAPI_MOSAIC="75706ADB11C869EE"
 BLE_ADDRESS="64:33:db:89:30:e0"
 rawfromaddress = MYADDRESS
 rawtoaddress = MYADDRESS
-myplace = 'bodytemp'
-device = "A&D6433db8930e0"
+myplace = MYPLACE
+# devicename = "A&D6433db8930e0"
+shortname = "A&D8930e0"
 WmosaicID = WANAPI_MOSAIC
 
 def scan():
@@ -33,7 +34,7 @@ def scan():
         devices = scanner.scan(3.0)
 
         for device in devices:
-            #print(f'SCAN BLE_ADDR：{device.addr}')
+            # print(f'SCAN BLE_ADDR：{device.addr}')
 
             if(device.addr.lower()==BLE_ADDRESS.lower()):
                 print("Find!")
@@ -56,13 +57,13 @@ class MyDelegate(btle.DefaultDelegate):
 
         temp = tofl.to_float_from_11073_32bit_float(data[1:5])
         print("temp = " + str(temp))
-        timestamp = todt.to_date_time(data[5:12])
-        #timestamp = datetime.datetime.now()
+        # timestamp = todt.to_date_time(data[5:12])
+        timestamp = datetime.datetime.now()
         timestampstr = timestamp.strftime('%Y/%m/%d %H:%M:%S')
         print("timestamp = " + timestampstr)
 
-        parent=device #myplaceでなくデバイスIDを使う
-        child=str(temp)
+        parent = myplace #myplaceでデータベースが見わけている
+        child = shortname +" " + str(temp)
         created_at=timestampstr
         con = sqlite3.connect('/home/pi/wanapi2/db/shizuinet.db')
         cur = con.cursor()
@@ -76,7 +77,7 @@ class MyDelegate(btle.DefaultDelegate):
         sql = 'INSERT INTO transactions (id, sender, receiver, mosaic, parent, child, created_at)  VALUES (?,?,?,?,?,?,?)'
         data = [id, rawfromaddress, rawtoaddress, WmosaicID, parent, child, created_at]
         cur.execute(sql, data)
-        #print(data)
+        print(data)
         con.commit()
         con.close()
 
