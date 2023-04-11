@@ -24,7 +24,7 @@ BLE_ADDRESS="64:33:db:89:30:e0"
 rawfromaddress = MYADDRESS
 rawtoaddress = MYADDRESS
 myplace = 'bodytemp'
-device = "A&D;6433db8930e0;"
+device = "A&D6433db8930e0"
 WmosaicID = WANAPI_MOSAIC
 
 def scan():
@@ -56,12 +56,12 @@ class MyDelegate(btle.DefaultDelegate):
 
         temp = tofl.to_float_from_11073_32bit_float(data[1:5])
         print("temp = " + str(temp))
-        #timestamp = todt.to_date_time(data[5:12])
-        timestamp = datetime.datetime.now()
+        timestamp = todt.to_date_time(data[5:12])
+        #timestamp = datetime.datetime.now()
         timestampstr = timestamp.strftime('%Y/%m/%d %H:%M:%S')
         print("timestamp = " + timestampstr)
 
-        parent=myplace
+        parent=device #myplaceでなくデバイスIDを使う
         child=str(temp)
         created_at=timestampstr
         con = sqlite3.connect('/home/pi/wanapi2/db/shizuinet.db')
